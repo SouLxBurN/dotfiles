@@ -1,8 +1,8 @@
 export PATH="$HOME/.jenv/bin:$PATH"
 eval "$(jenv init -)"
-export http_proxy=http://proxy.inbcu.com:80
-export https_proxy=http://proxy.inbcu.com:80
-export no_proxy="localhost, *.comcastnets.net, *.test.eonline.com, *.dev.eonline.com, *.staging.prod.eonline.com, .inbcu.com, *.tfayd.com, *.nbcuni.ge.com, *.mail.tfayd.com, *.cns.comcastnets.com, *.cable.comcast.com, *.corphq.comcast.com, *.comcastnets.com"
+export http_proxy=
+export https_proxy=
+export no_proxy=
 export SYNCB_HOME=~/projects/fork-sync
 export AWS_HOME="$HOME/.aws/"
 export PROJECTS_HOME="$HOME/projects/"
