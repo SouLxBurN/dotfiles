@@ -118,6 +118,7 @@ source $ZSH/oh-my-zsh.sh
  alias dcu="docker-compose up"
  alias dcd="docker-compose down"
  alias dce="docker-compose exec"
+ alias gdog="git log --all --decorate --oneline --graph"
 
 # misc aliases
  alias syncb="~/projects/fork-sync/syncb"
