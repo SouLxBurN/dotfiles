@@ -1,9 +1,11 @@
-export PATH="$HOME/.jenv/bin:$PATH"
-eval "$(jenv init -)"
+export GOPATH="$HOME/go/"
+export PATH="$HOME/.jenv/bin:/usr/local/opt/node@10/bin:$PATH"
+export PATH="$GOPATH/bin:$PATH"
+export PATH="/usr/local/opt/ant@1.9/bin:$PATH"
 export http_proxy=
 export https_proxy=
 export no_proxy=
-export SYNCB_HOME=~/projects/fork-sync
+export SYNCB_HOME=~/projects/personal/fork-sync
 export AWS_HOME="$HOME/.aws/"
 export PROJECTS_HOME="$HOME/projects/"
 
@@ -11,14 +13,12 @@ export PROJECTS_HOME="$HOME/projects/"
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH=/Users/tristanfarmer/.oh-my-zsh
+export ZSH=~/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-#ZSH_THEME="robbyrussell"
 ZSH_THEME="agnoster"
-#ZSH_THEME="spaceship"
 
 # Set list of themes to load
 # Setting this variable when ZSH_THEME=random
@@ -112,13 +112,44 @@ source $ZSH/oh-my-zsh.sh
  alias gs="git stash"
  alias gsp="git stash pop"
  alias gsl="git stash list"
- 
-# docker aliases 
+ alias gdog="git log --all --decorate --oneline --graph"
+
+# docker aliases
  alias di="docker images"
  alias dcu="docker-compose up"
  alias dcd="docker-compose down"
  alias dce="docker-compose exec"
- alias gdog="git log --all --decorate --oneline --graph"
 
 # misc aliases
+ alias vi="nvim"
+ alias vim="nvim"
  alias syncb="~/projects/fork-sync/syncb"
+ alias medis="(cd ~/tools/medis && npm start)"
+ alias ecrlogin="aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 275445432237.dkr.ecr.us-west-2.amazonaws.com"
+ alias unsetproxy='unset $(compgen -v | grep -i "_PROXY$")'
+
+# Lazy load nvm
+declare -a NODE_GLOBALS=(`find ~/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
+
+NODE_GLOBALS+=("node")
+NODE_GLOBALS+=("nvm")
+
+load_nvm () {
+    export NVM_DIR=~/.nvm
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+}
+
+for cmd in "${NODE_GLOBALS[@]}"; do
+    eval "${cmd}(){ unset -f ${NODE_GLOBALS}; load_nvm; ${cmd} \$@ }"
+done
+
+# Lazy load jenv
+if type jenv > /dev/null; then
+    export PATH="${JENV_ROOT}/bin:${JENV_ROOT}/shims:${PATH}"
+    function jenv() {
+        unset -f jenv
+        eval "$(command jenv init -)"
+        jenv $@
+    }
+fi
