@@ -56,6 +56,12 @@ call plug#begin('~/.config/nvim/plugged')
 
     " Language Specific Plugins
     Plug 'fatih/vim-go'
+	Plug 'yuezk/vim-js'
+	Plug 'maxmellon/vim-jsx-pretty'
+	Plug 'HerringtonDarkholme/yats.vim' " typescript syntax
+
+	Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+	let g:coc_global_extensions = ['coc-tslint-plugin', 'coc-tsserver', 'coc-css', 'coc-html', 'coc-json', 'coc-prettier', 'coc-java', 'coc-java-lombok', 'coc-groovy', 'coc-docker', 'coc-graphql']
 
     " Color Scheme
     Plug 'gruvbox-community/gruvbox'
@@ -106,6 +112,18 @@ nnoremap <leader>pf :lua require('telescope.builtin').find_files()<CR>
 nnoremap <leader>ph :lua require'telescope.builtin'.treesitter()<CR>
 nnoremap <C-p> :lua require('telescope.builtin').git_files()<CR>
 
+" Coc.nvim mappings
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
 " OS Copy Paste
 noremap <Leader>y "*y
 noremap <Leader>p "*p
@@ -135,11 +153,10 @@ nnoremap <leader>T :vsp \| terminal<CR>
 tnoremap <Esc> <C-\><C-n>
 
 " Connecting and initializing language servers
-lua require'telescope'.setup{}
+lua require('telescope').setup{}
 lua require('telescope').load_extension('fzy_native')
-lua require'nvim-treesitter.configs'.setup{ highlight = { enable = true, disable = { } } }
-lua require'lspconfig'.gopls.setup{on_attach=require'completion'.on_attach}
-lua require'lspconfig'.tsserver.setup{on_attach=require'completion'.on_attach}
+lua require('nvim-treesitter.configs').setup{ highlight = { enable = true, disable = { } } }
+lua require('lspconfig').gopls.setup{on_attach=require'completion'.on_attach}
 
 " I Blame ThePrimeagen... This fixes something...
 fun! TrimWhitespace()
