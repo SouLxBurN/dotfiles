@@ -32,6 +32,8 @@ call plug#begin('~/.config/nvim/plugged')
 	" Markdown
 	Plug 'godlygeek/tabular'
 	Plug 'plasticboy/vim-markdown'
+	" Requires yarn, if yarn wasn't present on :PlugInstall
+	" run :call mkdp#until#install()
 	Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 
     " Improved Syntax Highlight/Parsing
