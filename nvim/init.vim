@@ -24,10 +24,18 @@ set splitright
 
 call plug#begin('~/.config/nvim/plugged')
     Plug 'mbbill/undotree'
+
     Plug 'neovim/nvim-lspconfig'
     Plug 'nvim-lua/completion-nvim'
     Plug 'tjdevries/nlua.nvim'
     Plug 'tjdevries/lsp_extensions.nvim'
+
+	" Statusline
+	Plug 'hoob3rt/lualine.nvim'
+
+	" Pretty Icons uwu
+	Plug 'ryanoasis/vim-devicons'
+	Plug 'kyazdani42/nvim-web-devicons'
 
 	" Environment files
 	Plug 'tpope/vim-dotenv'
@@ -45,7 +53,6 @@ call plug#begin('~/.config/nvim/plugged')
     " Nerdtree and plugins
     Plug 'preservim/nerdtree'
     Plug 'Xuyuanp/nerdtree-git-plugin'
-    Plug 'ryanoasis/vim-devicons'
     Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
     " Telescope
@@ -134,6 +141,18 @@ nmap <leader>rn <Plug>(coc-rename)
 " Formatting selected code.
 xmap <leader>f <Plug>(coc-format-selected)
 nmap <leader>f <Plug>(coc-format-selected)
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
 
 " OS Copy Paste
 noremap <Leader>y "*y
@@ -190,6 +209,9 @@ lua require('telescope').setup{}
 lua require('telescope').load_extension('fzy_native')
 lua require('nvim-treesitter.configs').setup{ highlight = { enable = true, disable = { } } }
 lua require('lspconfig').gopls.setup{on_attach=require'completion'.on_attach}
+
+" Init Statusline
+lua require('lualine').setup{options={theme='gruvbox'}}
 
 function! s:build_go_files()
   let l:file = expand('%')
