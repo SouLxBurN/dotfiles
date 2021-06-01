@@ -39,6 +39,7 @@ call plug#begin('~/.config/nvim/plugged')
 
 	" Environment files
 	Plug 'tpope/vim-dotenv'
+	Plug 'tpope/vim-commentary'
 
 	" Markdown
 	Plug 'godlygeek/tabular'
@@ -93,6 +94,8 @@ hi Normal guibg=none ctermbg=none
 hi StatusLine guibg=none cterm=none ctermbg=none ctermfg=223 guifg=#ebdbb2
 hi StatusLineNC gui=none guibg=none cterm=none ctermbg=none ctermfg=223 guifg=#ebdbb2
 hi SignColumn guibg=none cterm=none ctermbg=none
+hi CursorLine ctermbg=none guibg=none
+hi VertSplit ctermfg=241 ctermbg=none guifg=#665c54 guibg=none
 
 " Go syntax highlighting
 let g:go_highlight_fields = 1
