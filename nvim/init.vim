@@ -21,6 +21,8 @@ set signcolumn=yes
 set report=2
 set splitbelow
 set splitright
+filetype plugin on
+filetype indent on
 
 call plug#begin('~/.config/nvim/plugged')
     Plug 'mbbill/undotree'
@@ -71,10 +73,16 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'fatih/vim-go'
 	Plug 'yuezk/vim-js'
 	Plug 'maxmellon/vim-jsx-pretty'
-	Plug 'HerringtonDarkholme/yats.vim' " typescript syntax
+	" typescript syntax
+	Plug 'HerringtonDarkholme/yats.vim'
+	Plug 'heavenshell/vim-jsdoc', {
+	  \ 'for': ['javascript', 'javascript.jsx','\typescript'],
+	  \ 'do': 'make install'
+	\}
+
 
 	Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
-	let g:coc_global_extensions = ['coc-tslint-plugin', 'coc-tsserver', 'coc-css', 'coc-html', 'coc-json', 'coc-prettier', 'coc-java', 'coc-java-lombok', 'coc-groovy', 'coc-docker', 'coc-floaterm']
+	let g:coc_global_extensions = ['coc-tslint-plugin', 'coc-tsserver', 'coc-css', 'coc-html', 'coc-json', 'coc-prettier', 'coc-eslint', 'coc-java', 'coc-java-lombok', 'coc-groovy', 'coc-docker', 'coc-floaterm']
 
 	" Floating Terminals
 	Plug 'voldikss/vim-floaterm'
@@ -144,6 +152,8 @@ nmap <leader>rn <Plug>(coc-rename)
 " Formatting selected code.
 xmap <leader>f <Plug>(coc-format-selected)
 nmap <leader>f <Plug>(coc-format-selected)
+command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
+
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
@@ -210,7 +220,7 @@ autocmd FileType qf wincmd J
 " Connecting and initializing language servers
 lua require('telescope').setup{}
 lua require('telescope').load_extension('fzy_native')
-lua require('nvim-treesitter.configs').setup{ highlight = { enable = true, disable = { } } }
+lua require('nvim-treesitter.configs').setup{ indent = { enable = true }, highlight = { enable = true, disable = { } } }
 lua require('lspconfig').gopls.setup{on_attach=require'completion'.on_attach}
 
 " Init Statusline
