@@ -330,6 +330,20 @@ nvim_lsp["diagnosticls"].setup {
 	}
 }
 
+-- Html/CSS LSP
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+nvim_lsp["html"].setup {
+	on_attach = on_attach,
+    capabilities = capabilities,
+    cmd = { "html-languageserver", "--stdio" }
+}
+nvim_lsp["cssls"].setup {
+	on_attach = on_attach,
+    capabilities = capabilities,
+    cmd = { "css-languageserver", "--stdio" }
+}
+
 -- Golang LSP
 nvim_lsp["gopls"].setup {
 	on_attach = on_attach,
