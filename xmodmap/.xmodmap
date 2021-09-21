@@ -1,0 +1,16 @@
+keycode 66 = BackSpace
+remove Mod4 = Hyper_L
+add Mod3 = Hyper_L
+keycode 66 = Hyper_L
+
+keycode 66 = Mode_switch
+keysym h = h H Left
+keysym l = l L Right
+keysym k = k K Up
+keysym j = j J Down
+keysym u = u U Prior
+keysym i = i I Home
+keysym o = o O End
+keysym p = p P Next
+
+remove lock = Hyper_L
