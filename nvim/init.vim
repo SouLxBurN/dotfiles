@@ -32,7 +32,7 @@ call plug#begin('~/.config/nvim/plugged')
 	Plug 'glepnir/lspsaga.nvim'
     " Plug 'nvim-lua/completion-nvim'
     " Plug 'tjdevries/nlua.nvim'
-    " Plug 'tjdevries/lsp_extensions.nvim'
+    Plug 'tjdevries/lsp_extensions.nvim'
 
 	" Statusline
 	Plug 'hoob3rt/lualine.nvim'
@@ -78,9 +78,11 @@ call plug#begin('~/.config/nvim/plugged')
 	" typescript syntax
 	Plug 'HerringtonDarkholme/yats.vim'
 	Plug 'heavenshell/vim-jsdoc', {
-	  \ 'for': ['javascript', 'javascript.jsx','typescript'],
+	  \ 'for': ['javascript', 'javascript.jsx', 'typescript', 'typescipt.tsx'],
 	  \ 'do': 'make install'
 	\}
+    " Adds extra functionality over rust analyzer
+    " Plug 'simrat39/rust-tools.nvim'
 
 	" Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 	" let g:coc_global_extensions = ['coc-tslint-plugin', 'coc-tsserver', 'coc-css', 'coc-html', 'coc-json', 'coc-prettier', 'coc-eslint', 'coc-java', 'coc-java-lombok', 'coc-groovy', 'coc-docker', 'coc-floaterm']
@@ -196,7 +198,6 @@ nnoremap <C-f> :FloatermNext<CR>
 tnoremap <C-b> <C-\><C-n>:FloatermPrev<CR>
 tnoremap <C-f> <C-\><C-n>:FloatermNext<CR>
 nnoremap <leader>fs :FloatermToggle<CR>
-" nnoremap <leader>fl :CocList floaterm<CR>
 nnoremap <leader>fd :FloatermNew --autoclose=2 --height=0.9 --width=0.9 --wintype=floating lazydocker<CR>
 nnoremap <leader>fg :FloatermNew --autoclose=2 --height=0.9 --width=0.9 --wintype=floating lazygit<CR>
 nnoremap <leader>fr :FloatermNew --autoclose=2 --height=0.75 --width=0.75 --wintype=floating ranger<CR>
@@ -351,19 +352,30 @@ nvim_lsp["gopls"].setup {
 	}
 }
 
+-- Rust LSP
+nvim_lsp["rust_analyzer"].setup {
+    on_attach = on_attach,
+    settings = {
+        ["rust-analyzer"] = {
+            assist = {
+                importGranularity = "module",
+                importPrefix = "by_self",
+            },
+            cargo = {
+                loadOutDirsFromCheck = true
+            },
+            procMacro = {
+                enable = true
+            },
+        }
+    }
+}
+
 -- Init Statusline
 require('lualine').setup{options={theme='gruvbox'}}
 
 EOF
 
-function! s:build_go_files()
-  let l:file = expand('%')
-  if l:file =~# '^\f\+_test\.go$'
-    call go#test#Test(0, 1)
-  elseif l:file =~# '^\f\+\.go$'
-    call go#cmd#Build(0)
-  endif
-endfunction
 autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
 autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
 
@@ -377,5 +389,4 @@ endfun
 augroup SouLxBurN
 	autocmd!
     autocmd BufWritePre * :call TrimWhitespace()
-	autocmd BufEnter,BufWinEnter,TabEnter *.rs :lua require'lsp_extensions'.inlay_hints{}
 augroup END
