@@ -29,7 +29,7 @@ call plug#begin('~/.config/nvim/plugged')
 
     Plug 'neovim/nvim-lspconfig'
 	Plug 'hrsh7th/nvim-compe'
-	Plug 'glepnir/lspsaga.nvim'
+	Plug 'tami5/lspsaga.nvim'
     " Plug 'nvim-lua/completion-nvim'
     " Plug 'tjdevries/nlua.nvim'
     Plug 'tjdevries/lsp_extensions.nvim'
@@ -83,9 +83,6 @@ call plug#begin('~/.config/nvim/plugged')
 	\}
     " Adds extra functionality over rust analyzer
     " Plug 'simrat39/rust-tools.nvim'
-
-	" Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
-	" let g:coc_global_extensions = ['coc-tslint-plugin', 'coc-tsserver', 'coc-css', 'coc-html', 'coc-json', 'coc-prettier', 'coc-eslint', 'coc-java', 'coc-java-lombok', 'coc-groovy', 'coc-docker', 'coc-floaterm']
 
 	" Floating Terminals
 	Plug 'voldikss/vim-floaterm'
@@ -157,6 +154,9 @@ nnoremap <leader>ps :lua require('telescope.builtin').grep_string({ search = vim
 nnoremap <leader>pw :lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>
 nnoremap <leader>pa :lua require('telescope.builtin').live_grep()<CR>
 nnoremap <leader>pf :lua require('telescope.builtin').find_files()<CR>
+nnoremap <leader>ca :lua require('telescope.builtin').lsp_code_actions()<CR>
+nnoremap <leader>gr :lua require('telescope.builtin').lsp_references()<CR>
+nnoremap <leader>gi :lua require('telescope.builtin').lsp_implementations()<CR>
 nnoremap <leader>ph :lua require'telescope.builtin'.treesitter()<CR>
 nnoremap <C-p> :lua require('telescope.builtin').git_files()<CR>
 
@@ -182,7 +182,7 @@ nnoremap <C-t> :NERDTreeFind<CR>
 nnoremap <leader>u :UndotreeShow<CR>
 
 " Git Mapping
-nnoremap <leader>gst :Gstatus<CR>
+nnoremap <leader>gst :Git<CR>
 nnoremap <leader>vd :Gdiffsplit!<CR>
 nnoremap gdh :diffget //2<CR>
 nnoremap gdl :diffget //3<CR>
@@ -218,6 +218,8 @@ lua require('nvim-treesitter.configs').setup{ indent = { enable = true }, highli
 lua << EOF
 local nvim_lsp = require('lspconfig')
 
+require('lspsaga').init_lsp_saga()
+
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -233,19 +235,16 @@ local on_attach = function(client, bufnr)
 	-- See `:help vim.lsp.*` for documentation on any of the below functions
 	buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
 	buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-	buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-	buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+ 	buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
 	buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
 	buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
 	buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
 	buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
 	buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
 	buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-	buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-	buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
 	buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-	buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-	buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+	buf_set_keymap('n', '[', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+	buf_set_keymap('n', ']', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
 	buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 	buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
@@ -376,7 +375,6 @@ require('lualine').setup{options={theme='gruvbox'}}
 
 EOF
 
-autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
 autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
 
 " I Blame ThePrimeagen... This fixes something...
