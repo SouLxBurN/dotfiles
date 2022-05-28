@@ -29,7 +29,6 @@ call plug#begin('~/.config/nvim/plugged')
 
     Plug 'neovim/nvim-lspconfig'
 	Plug 'hrsh7th/nvim-compe'
-	Plug 'tami5/lspsaga.nvim'
     " Plug 'nvim-lua/completion-nvim'
     " Plug 'tjdevries/nlua.nvim'
     Plug 'tjdevries/lsp_extensions.nvim'
@@ -72,7 +71,6 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'junegunn/gv.vim'
 
     " Language Specific Plugins
-    " Plug 'fatih/vim-go'
 	Plug 'yuezk/vim-js'
 	Plug 'maxmellon/vim-jsx-pretty'
 	" typescript syntax
@@ -82,7 +80,7 @@ call plug#begin('~/.config/nvim/plugged')
 	  \ 'do': 'make install'
 	\}
     " Adds extra functionality over rust analyzer
-    " Plug 'simrat39/rust-tools.nvim'
+    Plug 'simrat39/rust-tools.nvim'
 
 	" Floating Terminals
 	Plug 'voldikss/vim-floaterm'
@@ -218,8 +216,6 @@ lua require('nvim-treesitter.configs').setup{ indent = { enable = true }, highli
 lua << EOF
 local nvim_lsp = require('lspconfig')
 
-require('lspsaga').init_lsp_saga()
-
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -352,6 +348,7 @@ nvim_lsp["gopls"].setup {
 }
 
 -- Rust LSP
+require('rust-tools').setup({})
 nvim_lsp["rust_analyzer"].setup {
     on_attach = on_attach,
     settings = {
