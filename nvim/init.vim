@@ -246,28 +246,28 @@ local on_attach = function(client, bufnr)
 
 end
 
-local format_async = function(err, result, ctx, config)
-    if err ~= nil or result == nil then return end
-    if not vim.api.nvim_buf_get_option(ctx.bufnr, "modified") then
-        local view = vim.fn.winsaveview()
-        vim.lsp.util.apply_text_edits(result, ctx.bufnr)
-        vim.fn.winrestview(view)
-        if ctx.bufnr == vim.api.nvim_get_current_buf() then
-            vim.api.nvim_command("noautocmd :update")
-        end
-    end
-end
+-- local format_async = function(err, result, ctx, config)
+--     if err ~= nil or result == nil then return end
+--     if not vim.api.nvim_buf_get_option(ctx.bufnr, "modified") then
+--         local view = vim.fn.winsaveview()
+--         vim.lsp.util.apply_text_edits(result, ctx.bufnr)
+--         vim.fn.winrestview(view)
+--         if ctx.bufnr == vim.api.nvim_get_current_buf() then
+--             vim.api.nvim_command("noautocmd :update")
+--         end
+--     end
+-- end
 
-vim.lsp.handlers["textDocument/formatting"] = format_async
+-- vim.lsp.handlers["textDocument/formatting"] = format_async
 
-_G.lsp_organize_imports = function()
-    local params = {
-        command = "_typescript.organizeImports",
-        arguments = {vim.api.nvim_buf_get_name(0)},
-        title = ""
-    }
-    vim.lsp.buf.execute_command(params)
-end
+-- _G.lsp_organize_imports = function()
+--     local params = {
+--         command = "_typescript.organizeImports",
+--         arguments = {vim.api.nvim_buf_get_name(0)},
+--         title = ""
+--     }
+--     vim.lsp.buf.execute_command(params)
+-- end
 
 -- Typescript/Javascript LSP
 nvim_lsp["tsserver"].setup {
@@ -276,53 +276,63 @@ nvim_lsp["tsserver"].setup {
 		on_attach(client)
 	end
 }
-
-local filetypes = {
-	javascript = "eslint",
-	typescript = "eslint",
-	typescriptreact = "eslint",
+nvim_lsp["eslint_d"].setup{
+    on_attach = on_attach
 }
 
-local linters = {
-	eslint = {
-		sourceName = "eslint",
-		command = "eslint_d",
-		rootPatterns = {".eslintrc.js", "package.json"},
-		debounce = 100,
-		args = {"--stdin", "--stdin-filename", "%filepath", "--format", "json"},
-		parseJson = {
-			errorsRoot = "[0].messages",
-			line = "line",
-			column = "column",
-			endLine = "endLine",
-			endColumn = "endColumn",
-			message = "${message} [${ruleId}]",
-			security = "severity"
-		},
-		securities = {[2] = "error", [1] = "warning"}
-	}
-}
+-- local filetypes = {
+-- 	javascript = "eslint",
+-- 	typescript = "eslint",
+-- 	typescriptreact = "eslint",
+-- }
 
-local formatters = {
-	prettier = {command = "prettier", args = {"--stdin-filepath", "%filepath"}}
-}
+-- local linters = {
+-- 	eslint = {
+-- 		sourceName = "eslint",
+-- 		command = "eslint_d",
+-- 		rootPatterns = {".eslintrc.js", "package.json"},
+-- 		debounce = 100,
+-- 		args = {"--stdin", "--stdin-filename", "%filepath", "--format", "json"},
+-- 		parseJson = {
+-- 			errorsRoot = "[0].messages",
+-- 			line = "line",
+-- 			column = "column",
+-- 			endLine = "endLine",
+-- 			endColumn = "endColumn",
+-- 			message = "${message} [${ruleId}]",
+-- 			security = "severity"
+-- 		},
+-- 		securities = {[2] = "error", [1] = "warning"}
+-- 	}
+-- }
 
-local formatFiletypes = {
-	javascript = "prettier",
-	typescript = "prettier",
-	typescriptreact = "prettier"
-}
+-- local formatters = {
+-- 	prettier = {command = "prettier", args = {"--stdin-filepath", "%filepath"}}
+-- }
+
+-- local formatFiletypes = {
+-- 	javascript = "prettier",
+-- 	typescript = "prettier",
+-- 	typescriptreact = "prettier"
+-- }
 
 -- Eslint LSP
-nvim_lsp["diagnosticls"].setup {
-	on_attach = on_attach,
-	filetypes = vim.tbl_keys(filetypes),
-	init_options = {
-		filetypes = filetypes,
-		linters = linters,
-		formatters = formatters,
-		formatFiletypes = formatFiletypes
-	}
+-- nvim_lsp["diagnosticls"].setup {
+-- 	on_attach = on_attach,
+-- 	filetypes = vim.tbl_keys(filetypes),
+-- 	init_options = {
+-- 		filetypes = filetypes,
+-- 		linters = linters,
+-- 		formatters = formatters,
+-- 		formatFiletypes = formatFiletypes
+-- 	}
+-- }
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+nvim_lsp["jsonls"].setup {
+    on_attach = on_attach,
+    capabilities = capabilities
 }
 
 -- Html/CSS LSP
@@ -372,6 +382,7 @@ require('lualine').setup{options={theme='gruvbox'}}
 
 EOF
 
+autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll
 autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
 
 " I Blame ThePrimeagen... This fixes something...

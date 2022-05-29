@@ -8,6 +8,6 @@ sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.
 ```
 3. Install language servers
 ```sh
-    npm install -g typescript typescript-language-server diagnostic-languageserver eslint_d
+    npm install -g typescript typescript-language-server diagnostic-languageserver eslint_d vscode-langservers-extracted
 ```
 4. Open nvim and run `:PlugInstall`
