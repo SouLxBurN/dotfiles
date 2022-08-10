@@ -276,7 +276,7 @@ nvim_lsp["tsserver"].setup {
 		on_attach(client)
 	end
 }
-nvim_lsp["eslint_d"].setup{
+nvim_lsp["eslint"].setup{
     on_attach = on_attach
 }
 
