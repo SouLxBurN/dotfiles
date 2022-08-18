@@ -87,6 +87,10 @@ call plug#begin('~/.config/nvim/plugged')
 
     " Color Scheme
     Plug 'gruvbox-community/gruvbox'
+    Plug 'catppuccin/nvim', {'as': 'catppuccin'}
+    Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
+    Plug 'dracula/vim', { 'as': 'dracula' }
+    Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 call plug#end()
 
 " Color and Transparency
@@ -96,12 +100,25 @@ if exists('+termguicolors')
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
 let g:gruvbox_invert_selection='0'
+
+" let g:catppuccin_flavour = 'mocha' " latte, frappe, macchiato, mocha
+" lua << EOF
+" require("catppuccin").setup()
+" EOF
+" colorscheme catppuccin
+" colorscheme spaceduck
+" colorscheme dracula
+" let g:tokyonight_style = "night"
+" colorscheme tokyonight
+
 hi Normal guibg=none ctermbg=none
 hi StatusLine guibg=none cterm=none ctermbg=none ctermfg=223 guifg=#ebdbb2
 hi StatusLineNC gui=none guibg=none cterm=none ctermbg=none ctermfg=223 guifg=#ebdbb2
 hi SignColumn guibg=none cterm=none ctermbg=none
 hi CursorLine ctermbg=none guibg=none
 hi VertSplit ctermfg=241 ctermbg=none guifg=#665c54 guibg=none
+hi LineNr ctermbg=none guibg=none
+hi EndOfBuffer ctermbg=none guibg=none
 
 " Go syntax highlighting
 let g:go_highlight_fields = 1
