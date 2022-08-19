@@ -169,7 +169,6 @@ nnoremap <leader>ps :lua require('telescope.builtin').grep_string({ search = vim
 nnoremap <leader>pw :lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>
 nnoremap <leader>pa :lua require('telescope.builtin').live_grep()<CR>
 nnoremap <leader>pf :lua require('telescope.builtin').find_files()<CR>
-nnoremap <leader>ca :lua require('telescope.builtin').lsp_code_actions()<CR>
 nnoremap <leader>gr :lua require('telescope.builtin').lsp_references()<CR>
 nnoremap <leader>gi :lua require('telescope.builtin').lsp_implementations()<CR>
 nnoremap <leader>ph :lua require'telescope.builtin'.treesitter()<CR>
@@ -254,6 +253,7 @@ local on_attach = function(client, bufnr)
 	buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
 	buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
 	buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+	buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
 	buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
 	buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
 	buf_set_keymap('n', '[', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
