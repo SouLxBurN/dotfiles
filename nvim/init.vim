@@ -94,12 +94,12 @@ call plug#begin('~/.config/nvim/plugged')
 call plug#end()
 
 " Color and Transparency
-colorscheme gruvbox
+" colorscheme gruvbox
 if exists('+termguicolors')
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
-let g:gruvbox_invert_selection='0'
+" let g:gruvbox_invert_selection='0'
 
 " let g:catppuccin_flavour = 'mocha' " latte, frappe, macchiato, mocha
 " lua << EOF
@@ -108,10 +108,11 @@ let g:gruvbox_invert_selection='0'
 " colorscheme catppuccin
 " colorscheme spaceduck
 " colorscheme dracula
-" let g:tokyonight_style = "night"
-" colorscheme tokyonight
+let g:tokyonight_style = "night"
+colorscheme tokyonight
 
 hi Normal guibg=none ctermbg=none
+hi NormalNC guibg=none ctermbg=none
 hi StatusLine guibg=none cterm=none ctermbg=none ctermfg=223 guifg=#ebdbb2
 hi StatusLineNC gui=none guibg=none cterm=none ctermbg=none ctermfg=223 guifg=#ebdbb2
 hi SignColumn guibg=none cterm=none ctermbg=none
@@ -395,7 +396,7 @@ nvim_lsp["rust_analyzer"].setup {
 }
 
 -- Init Statusline
-require('lualine').setup{options={theme='gruvbox'}}
+require('lualine').setup{options={theme='tokyonight'}}
 
 EOF
 
