@@ -27,6 +27,7 @@ filetype indent on
 call plug#begin('~/.config/nvim/plugged')
     Plug 'mbbill/undotree'
 
+    " LSP
     Plug 'neovim/nvim-lspconfig'
 	Plug 'hrsh7th/nvim-compe'
     " Plug 'nvim-lua/completion-nvim'
@@ -35,6 +36,7 @@ call plug#begin('~/.config/nvim/plugged')
 
 	" Statusline
 	Plug 'hoob3rt/lualine.nvim'
+    Plug 'alemidev/vim-combo'
 
 	" Pretty Icons uwu
 	Plug 'ryanoasis/vim-devicons'
@@ -53,6 +55,7 @@ call plug#begin('~/.config/nvim/plugged')
 
     " Improved Syntax Highlight/Parsing
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'nvim-treesitter/nvim-treesitter-context'
 
     " Nerdtree and plugins
     Plug 'preservim/nerdtree'
@@ -81,6 +84,8 @@ call plug#begin('~/.config/nvim/plugged')
 	\}
     " Adds extra functionality over rust analyzer
     Plug 'simrat39/rust-tools.nvim'
+    " Java
+    Plug 'mfussenegger/nvim-jdtls'
 
 	" Floating Terminals
 	Plug 'voldikss/vim-floaterm'
@@ -228,41 +233,16 @@ autocmd FileType qf wincmd J
 lua require('telescope').setup{}
 lua require('telescope').load_extension('fzy_native')
 lua require('nvim-treesitter.configs').setup{ indent = { enable = true }, highlight = { enable = true, disable = { } } }
+lua require('treesitter-context').setup{}
 
 " LSP Configurations
 lua << EOF
+vim.lsp.set_log_level(1)
 local nvim_lsp = require('lspconfig')
+local on_attach = require('lspattach')
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-	local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-	local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-	--Enable completion triggered by <c-x><c-o>
-	buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-	-- Mappings.
-	local opts = { noremap=true, silent=true }
-
-	-- See `:help vim.lsp.*` for documentation on any of the below functions
-	buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-	buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
- 	buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-	buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-	buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-	buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-	buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-	buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-	buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-	buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-	buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-	buf_set_keymap('n', '[', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-	buf_set_keymap('n', ']', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-	buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-	buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-
-end
 
 -- local format_async = function(err, result, ctx, config)
 --     if err ~= nil or result == nil then return end
@@ -289,10 +269,11 @@ end
 
 -- Typescript/Javascript LSP
 nvim_lsp["tsserver"].setup {
-	on_attach = function(client)
-		client.resolved_capabilities.document_formatting = false
-		on_attach(client)
-	end
+    on_attach = on_attach
+--	on_attach = function(client)
+--		client.resolved_capabilities.document_formatting = false
+--		on_attach(client)
+--	end
 }
 nvim_lsp["eslint"].setup{
     on_attach = on_attach
@@ -395,8 +376,45 @@ nvim_lsp["rust_analyzer"].setup {
     }
 }
 
+local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
+local workspace_dir = '/Users/a206581293/projects/java-workspaces/' .. project_name
+
+nvim_lsp["jdtls"].setup{
+    on_attach = on_attach,
+    cmd = {
+        '/Users/a206581293/.jenv/versions/19/bin/java',
+        '-Declipse.application=org.eclipse.jdt.ls.core.id1',
+        '-Dosgi.bundles.defaultStartLevel=4',
+        '-Declipse.product=org.eclipse.jdt.ls.core.product',
+        '-Dlog.protocol=true',
+        '-Dlog.level=ALL',
+        '-Xms1g',
+        '--add-modules=ALL-SYSTEM',
+        '--add-opens', 'java.base/java.util=ALL-UNNAMED',
+        '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+        '-javaagent:/Users/a206581293/tools/lombok.jar',
+        '-Xbootclasspath/a:/Users/a206581293/tools/lombok.jar',
+
+        '-jar', '/usr/local/Cellar/jdtls/1.15.0/libexec/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar',
+        '-configuration', '/usr/local/Cellar/jdtls/1.15.0/libexec/config_mac',
+        '-data', workspace_dir,
+    },
+    init_options = {
+        jvm_args = {
+            "-javaagent:/Users/a206581293/tools/lombok.jar"
+        },
+        workspace = workspace_dir
+    }
+}
+
 -- Init Statusline
-require('lualine').setup{options={theme='tokyonight'}}
+local function combo()
+  return string.format("%s",vim.g.combo)
+end
+require('lualine').setup{
+    options={theme='tokyonight'},
+    sections={lualine_x={combo, 'encoding', 'fileformat', 'filetype'}}
+}
 
 EOF
 

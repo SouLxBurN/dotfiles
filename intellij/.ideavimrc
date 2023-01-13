@@ -1,0 +1,38 @@
+set visualbell
+set noerrorbells
+set relativenumber
+set number
+set smartindent
+set splitbelow
+set splitright
+set scrolloff=8
+set incsearch
+
+""" Idea specific settings ------------------
+set ideajoin
+set ideastatusicon=gray
+set idearefactormode=keep
+
+let mapleader = " "
+
+nnoremap <leader>h <c-w>h<CR>
+nnoremap <leader>j <c-w>j<CR>
+nnoremap <leader>k <c-w>k<CR>
+nnoremap <leader>l <c-w>l<CR>
+
+nnoremap <leader>rn :action RenameElement<CR>
+nnoremap <leader>ca :action ShowIntentionActions<CR>
+nnoremap <leader>u :action LocalHistory.ShowHistory<CR>
+
+nnoremap gd :action GotoDeclaration<CR>
+nnoremap gr :action ShowUsages<CR>
+nnoremap gi :action GotoImplementation<CR>
+nnoremap gs :action FindInPath<CR>
+
+nnoremap <c-p> :action GotoFile<CR>
+nnoremap <c-t> :action ActivateProjectToolWindow<CR>
+nnoremap fs :action ActivateTerminalToolWindow<CR>
+
+nnoremap <c-o> :action Back<CR>
+nnoremap <c-i> :action Forward<CR>
+
