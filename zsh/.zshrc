@@ -71,8 +71,10 @@ ZSH_THEME="agnoster"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
-  osx
+  macos
+  rust
   bash
+  docker
   zsh-syntax-highlighting
   zsh-autosuggestions
 )
@@ -127,6 +129,11 @@ source $ZSH/oh-my-zsh.sh
  alias medis="(cd ~/tools/medis && npm start)"
  alias ecrlogin="aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 275445432237.dkr.ecr.us-west-2.amazonaws.com"
  alias unsetproxy='unset $(compgen -v | grep -i "_PROXY$")'
+
+ alias chkwtr="curl wttr.in/Los+Angeles"
+
+ function wttr { curl wttr.in/$1; }
+ export -f wttr > /dev/null 2>&1
 
 # Lazy load nvm
 declare -a NODE_GLOBALS=(`find ~/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
