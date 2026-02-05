@@ -1,13 +1,13 @@
 export GOPATH="$HOME/go/"
-export PATH="$HOME/.jenv/bin:/usr/local/opt/node@10/bin:$PATH"
+export PATH="/opt/homebrew/opt/node@18/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 export PATH="/usr/local/opt/ant@1.9/bin:$PATH"
 export http_proxy=
 export https_proxy=
 export no_proxy=
-export SYNCB_HOME=~/projects/personal/fork-sync
 export AWS_HOME="$HOME/.aws/"
 export PROJECTS_HOME="$HOME/projects/"
+export M2_HOME="$HOME/.m2/"
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
@@ -111,29 +111,32 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # git aliases
- alias gs="git stash"
- alias gsp="git stash pop"
- alias gsl="git stash list"
- alias gdog="git log --all --decorate --oneline --graph"
+alias gs="git stash"
+alias gsp="git stash pop"
+alias gsl="git stash list"
+alias gdog="git log --all --decorate --oneline --graph"
 
 # docker aliases
- alias di="docker images"
- alias dcu="docker-compose up"
- alias dcd="docker-compose down"
- alias dce="docker-compose exec"
+alias di="docker images"
+alias dcu="docker compose up"
+alias dcd="docker compose down"
+alias dce="docker compose exec"
+alias docker-compose="docker compose"
 
 # misc aliases
- alias vi="nvim"
- alias vim="nvim"
- alias syncb="~/projects/fork-sync/syncb"
- alias medis="(cd ~/tools/medis && npm start)"
- alias ecrlogin="aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 275445432237.dkr.ecr.us-west-2.amazonaws.com"
- alias unsetproxy='unset $(compgen -v | grep -i "_PROXY$")'
+alias vi="nvim"
+alias vim="nvim"
+alias syncb="~/projects/fork-sync/syncb"
+alias medis="(cd ~/tools/medis && npm start)"
+alias ecrlogin="aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 275445432237.dkr.ecr.us-west-2.amazonaws.com"
+alias unsetproxy='unset $(compgen -v | grep -i "_PROXY$")'
 
- alias chkwtr="curl wttr.in/Los+Angeles"
+alias chkwtr="curl wttr.in/Los+Angeles"
 
- function wttr { curl wttr.in/$1; }
- export -f wttr > /dev/null 2>&1
+alias flushdns-mac="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
+
+function wttr { curl wttr.in/$1; }
+export -f wttr > /dev/null 2>&1
 
 # Lazy load nvm
 declare -a NODE_GLOBALS=(`find ~/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
@@ -160,3 +163,7 @@ if type jenv > /dev/null; then
         jenv $@
     }
 fi
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
