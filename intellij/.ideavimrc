@@ -15,6 +15,9 @@ set idearefactormode=keep
 
 let mapleader = " "
 
+noremap <leader>y "*y
+noremap <leader>p "*p
+
 nnoremap <leader>h <c-w>h<CR>
 nnoremap <leader>j <c-w>j<CR>
 nnoremap <leader>k <c-w>k<CR>
@@ -29,9 +32,12 @@ nnoremap gr :action ShowUsages<CR>
 nnoremap gi :action GotoImplementation<CR>
 nnoremap gs :action FindInPath<CR>
 
+xnoremap gc :action CommentByLineComment<CR>
+
 nnoremap <c-p> :action GotoFile<CR>
 nnoremap <c-t> :action ActivateProjectToolWindow<CR>
-nnoremap fs :action ActivateTerminalToolWindow<CR>
+nnoremap <leader>fs :action ActivateTerminalToolWindow<CR>
+nnoremap <leader>fo :action FileStructurePopup<CR>
 
 nnoremap <c-o> :action Back<CR>
 nnoremap <c-i> :action Forward<CR>

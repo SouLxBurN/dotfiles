@@ -1,5 +1,4 @@
-set tabstop=4 softtabstop=4
-set shiftwidth=4
+set tabstop=4 softtabstop=4 shiftwidth=4
 set expandtab
 set smartindent
 
@@ -34,6 +33,8 @@ call plug#begin('~/.config/nvim/plugged')
     " Plug 'tjdevries/nlua.nvim'
     Plug 'tjdevries/lsp_extensions.nvim'
 
+    Plug 'github/copilot.vim'
+
 	" Statusline
 	Plug 'hoob3rt/lualine.nvim'
     Plug 'alemidev/vim-combo'
@@ -60,7 +61,7 @@ call plug#begin('~/.config/nvim/plugged')
     " Nerdtree and plugins
     Plug 'preservim/nerdtree'
     Plug 'Xuyuanp/nerdtree-git-plugin'
-    Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+    " Plug 'tiagofumo/vim-nerdtree-syntax-highlight' " https://github.com/tiagofumo/vim-nerdtree-syntax-highlight/issues/53
 
     " Telescope
     Plug 'BurntSushi/ripgrep'
@@ -376,36 +377,43 @@ nvim_lsp["rust_analyzer"].setup {
     }
 }
 
-local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
-local workspace_dir = '/Users/a206581293/projects/java-workspaces/' .. project_name
-
-nvim_lsp["jdtls"].setup{
+require('lspconfig')['pyright'].setup{
     on_attach = on_attach,
-    cmd = {
-        '/Users/a206581293/.jenv/versions/19/bin/java',
-        '-Declipse.application=org.eclipse.jdt.ls.core.id1',
-        '-Dosgi.bundles.defaultStartLevel=4',
-        '-Declipse.product=org.eclipse.jdt.ls.core.product',
-        '-Dlog.protocol=true',
-        '-Dlog.level=ALL',
-        '-Xms1g',
-        '--add-modules=ALL-SYSTEM',
-        '--add-opens', 'java.base/java.util=ALL-UNNAMED',
-        '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
-        '-javaagent:/Users/a206581293/tools/lombok.jar',
-        '-Xbootclasspath/a:/Users/a206581293/tools/lombok.jar',
-
-        '-jar', '/usr/local/Cellar/jdtls/1.15.0/libexec/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar',
-        '-configuration', '/usr/local/Cellar/jdtls/1.15.0/libexec/config_mac',
-        '-data', workspace_dir,
-    },
-    init_options = {
-        jvm_args = {
-            "-javaagent:/Users/a206581293/tools/lombok.jar"
-        },
-        workspace = workspace_dir
-    }
+	flags = {
+		debounce_text_changes = 150,
+	}
 }
+
+-- local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
+-- local workspace_dir = '/Users/a206581293/projects/java-workspaces/' .. project_name
+
+-- nvim_lsp["jdtls"].setup{
+--     on_attach = on_attach,
+--     cmd = {
+--         '/Users/a206581293/.jenv/versions/19/bin/java',
+--         '-Declipse.application=org.eclipse.jdt.ls.core.id1',
+--         '-Dosgi.bundles.defaultStartLevel=4',
+--         '-Declipse.product=org.eclipse.jdt.ls.core.product',
+--         '-Dlog.protocol=true',
+--         '-Dlog.level=ALL',
+--         '-Xms1g',
+--         '--add-modules=ALL-SYSTEM',
+--         '--add-opens', 'java.base/java.util=ALL-UNNAMED',
+--         '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+--         '-javaagent:/Users/a206581293/tools/lombok.jar',
+--         '-Xbootclasspath/a:/Users/a206581293/tools/lombok.jar',
+--
+--         '-jar', '/usr/local/Cellar/jdtls/1.15.0/libexec/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar',
+--         '-configuration', '/usr/local/Cellar/jdtls/1.15.0/libexec/config_mac',
+--         '-data', workspace_dir,
+--     },
+--     init_options = {
+--         jvm_args = {
+--             "-javaagent:/Users/a206581293/tools/lombok.jar"
+--         },
+--         workspace = workspace_dir
+--     }
+-- }
 
 -- Init Statusline
 local function combo()
@@ -419,7 +427,7 @@ require('lualine').setup{
 EOF
 
 autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll
-autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
+autocmd BufWritePre *.go lua vim.lsp.buf.format()
 
 " I Blame ThePrimeagen... This fixes something...
 fun! TrimWhitespace()
