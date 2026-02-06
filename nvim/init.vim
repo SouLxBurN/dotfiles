@@ -84,7 +84,7 @@ call plug#begin('~/.config/nvim/plugged')
 	  \ 'do': 'make install'
 	\}
     " Adds extra functionality over rust analyzer
-    Plug 'simrat39/rust-tools.nvim'
+    " Plug 'simrat39/rust-tools.nvim'
     " Java
     Plug 'mfussenegger/nvim-jdtls'
 
@@ -231,15 +231,17 @@ autocmd FileType markdown nmap <leader>md :MarkdownPreview<CR>
 autocmd FileType qf wincmd J
 
 " Connecting and initializing language servers
-lua require('telescope').setup{}
-lua require('telescope').load_extension('fzy_native')
-lua require('nvim-treesitter.configs').setup{ indent = { enable = true }, highlight = { enable = true, disable = { } } }
-lua require('treesitter-context').setup{}
+" Telescope and Treesitter setup (deferred so plugins are loaded)
+augroup PluginSetup
+  autocmd!
+  autocmd VimEnter * lua pcall(function() require('telescope').setup{} require('telescope').load_extension('fzy_native') end)
+  autocmd VimEnter * lua pcall(function() require('nvim-treesitter.configs').setup{ indent = { enable = true }, highlight = { enable = true, disable = { } } } end)
+  autocmd VimEnter * lua pcall(function() require('treesitter-context').setup{} end)
+augroup END
 
 " LSP Configurations
 lua << EOF
 vim.lsp.set_log_level(1)
-local nvim_lsp = require('lspconfig')
 local on_attach = require('lspattach')
 
 -- Use an on_attach function to only map the following keys
@@ -268,17 +270,13 @@ local on_attach = require('lspattach')
 --     vim.lsp.buf.execute_command(params)
 -- end
 
--- Typescript/Javascript LSP
-nvim_lsp["tsserver"].setup {
+-- Typescript/Javascript LSP (Neovim 0.11+ API)
+vim.lsp.config('ts_ls', {
     on_attach = on_attach
---	on_attach = function(client)
---		client.resolved_capabilities.document_formatting = false
---		on_attach(client)
---	end
-}
-nvim_lsp["eslint"].setup{
-    on_attach = on_attach
-}
+})
+vim.lsp.enable('ts_ls')
+vim.lsp.config('eslint', { on_attach = on_attach })
+vim.lsp.enable('eslint')
 
 -- local filetypes = {
 -- 	javascript = "eslint",
@@ -317,7 +315,7 @@ nvim_lsp["eslint"].setup{
 -- }
 
 -- Eslint LSP
--- nvim_lsp["diagnosticls"].setup {
+-- nvim.lsp.config["diagnosticls"].setup {
 -- 	on_attach = on_attach,
 -- 	filetypes = vim.tbl_keys(filetypes),
 -- 	init_options = {
@@ -330,64 +328,70 @@ nvim_lsp["eslint"].setup{
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
-nvim_lsp["jsonls"].setup {
+vim.lsp.config('jsonls', {
     on_attach = on_attach,
     capabilities = capabilities
-}
+})
+vim.lsp.enable('jsonls')
 
 -- Html/CSS LSP
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
-nvim_lsp["html"].setup {
+vim.lsp.config('html', {
 	on_attach = on_attach,
     capabilities = capabilities,
     cmd = { "html-languageserver", "--stdio" }
-}
-nvim_lsp["cssls"].setup {
+})
+vim.lsp.enable('html')
+vim.lsp.config('cssls', {
 	on_attach = on_attach,
     capabilities = capabilities,
     cmd = { "css-languageserver", "--stdio" }
-}
+})
+vim.lsp.enable('cssls')
 
 -- Golang LSP
-nvim_lsp["gopls"].setup {
+vim.lsp.config('gopls', {
 	on_attach = on_attach,
 	flags = {
 		debounce_text_changes = 150,
 	}
-}
+})
+vim.lsp.enable('gopls')
 
--- Rust LSP
-require('rust-tools').setup({})
-nvim_lsp["rust_analyzer"].setup {
-    on_attach = on_attach,
-    settings = {
-        ["rust-analyzer"] = {
-            assist = {
-                importGranularity = "module",
-                importPrefix = "by_self",
-            },
-            cargo = {
-                loadOutDirsFromCheck = true
-            },
-            procMacro = {
-                enable = true
-            },
-        }
-    }
-}
+-- Rust LSP (commented out until needed)
+-- require('rust-tools').setup({})
+-- vim.lsp.config('rust_analyzer', {
+--     on_attach = on_attach,
+--     settings = {
+--         ["rust-analyzer"] = {
+--             assist = {
+--                 importGranularity = "module",
+--                 importPrefix = "by_self",
+--             },
+--             cargo = {
+--                 loadOutDirsFromCheck = true
+--             },
+--             procMacro = {
+--                 enable = true
+--             },
+--         }
+--     }
+-- })
+-- vim.lsp.enable('rust_analyzer')
 
-require('lspconfig')['pyright'].setup{
+vim.lsp.config('pyright', {
     on_attach = on_attach,
 	flags = {
 		debounce_text_changes = 150,
 	}
-}
+})
+vim.lsp.enable('pyright')
 
 -- local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 -- local workspace_dir = '/Users/a206581293/projects/java-workspaces/' .. project_name
 
--- nvim_lsp["jdtls"].setup{
+-- nvim.lsp.config("jdtls").setup{
 --     on_attach = on_attach,
 --     cmd = {
 --         '/Users/a206581293/.jenv/versions/19/bin/java',
